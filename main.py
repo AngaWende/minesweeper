@@ -1,6 +1,6 @@
 from random import randint
 numero_de_casas = 10
-numero_de_bombas = 15
+numero_de_bombas = 10
 
 tabuleiro = []
 
