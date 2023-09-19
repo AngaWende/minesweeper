@@ -1,15 +1,15 @@
 from random import randint
-numero_de_casas = 10
-numero_de_bombas = 10
+numero_de_casas = int(input('Digite a quantidade de linhas que o tabuleiro terá: '))
+numero_de_bombas = int(input('Digite a quantidade de bombas: '))
 
 tabuleiro = []
+tab_visivel = [[" " for l in range(numero_de_casas)] for c in range(numero_de_casas)]
 
 def criar_tabuleiro():
     global tabuleiro
     tabuleiro = [[0 for l in range(numero_de_casas)] for c in range(numero_de_casas)]
 
 criar_tabuleiro()
-tab_visivel = [[" " for l in range(numero_de_casas)] for c in range(numero_de_casas)]
 
 posicoes_das_bombas = []
 def colocar_bombas():
@@ -180,4 +180,10 @@ def jogar():
         if casas_vagas() == numero_de_bombas:
             print('PARABÉNS, VOCÊ GANHOU!!!!!')
 
-jogar()
+
+
+if __name__=='__main__':
+    criar_tabuleiro()
+    colocar_bombas()
+    colocar_numeros_de_bombas_ao_redor()
+    jogar()
