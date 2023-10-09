@@ -1,6 +1,8 @@
 from random import randint
 numero_de_casas = int(input('Digite a quantidade de linhas que o tabuleiro terá: '))
 numero_de_bombas = int(input('Digite a quantidade de bombas: '))
+# numero_de_casas = 10
+# numero_de_bombas = 10
 
 tabuleiro = []
 tab_visivel = [[" " for l in range(numero_de_casas)] for c in range(numero_de_casas)]
@@ -9,7 +11,6 @@ def criar_tabuleiro():
     global tabuleiro
     tabuleiro = [[0 for l in range(numero_de_casas)] for c in range(numero_de_casas)]
 
-criar_tabuleiro()
 
 posicoes_das_bombas = []
 def colocar_bombas():
@@ -27,35 +28,34 @@ def colocar_bombas():
         bombas_colocadas+=1
 
 
-colocar_bombas()
 
 def colocar_numeros_de_bombas_ao_redor():
-    for x in posicoes_das_bombas:
-        lin = int(x[0])
-        col = int(x[1])
-        if lin > 0 and col > 0 and tabuleiro[lin - 1][col - 1] != '*':
-            tabuleiro[lin - 1][col - 1] += 1
+        for x in posicoes_das_bombas:
+            lin = int(x[0])
+            col = int(x[1])
+            if lin > 0 and col > 0 and tabuleiro[lin - 1][col - 1] != '*':
+                tabuleiro[lin - 1][col - 1] += 1
 
-        if lin > 0 and tabuleiro[lin - 1][col] != '*':
-            tabuleiro[lin - 1][col] += 1
+            if lin > 0 and tabuleiro[lin - 1][col] != '*':
+                tabuleiro[lin - 1][col] += 1
 
-        if lin > 0 and col < numero_de_casas - 1 and tabuleiro[lin - 1][col + 1] != '*':
-            tabuleiro[lin - 1][col + 1] += 1
+            if lin > 0 and col < numero_de_casas - 1 and tabuleiro[lin - 1][col + 1] != '*':
+                tabuleiro[lin - 1][col + 1] += 1
 
-        if col > 0 and tabuleiro[lin][col - 1] != '*':
-            tabuleiro[lin][col - 1] += 1
+            if col > 0 and tabuleiro[lin][col - 1] != '*':
+                tabuleiro[lin][col - 1] += 1
 
-        if col < numero_de_casas - 1 and tabuleiro[lin][col + 1] != '*':
-            tabuleiro[lin][col + 1] += 1
+            if col < numero_de_casas - 1 and tabuleiro[lin][col + 1] != '*':
+                tabuleiro[lin][col + 1] += 1
 
-        if lin < numero_de_casas - 1 and col > 0 and tabuleiro[lin + 1][col - 1] != '*':
-            tabuleiro[lin + 1][col - 1] += 1
+            if lin < numero_de_casas - 1 and col > 0 and tabuleiro[lin + 1][col - 1] != '*':
+                tabuleiro[lin + 1][col - 1] += 1
 
-        if lin < numero_de_casas - 1 and tabuleiro[lin + 1][col] != '*':
-            tabuleiro[lin + 1][col] += 1
+            if lin < numero_de_casas - 1 and tabuleiro[lin + 1][col] != '*':
+                tabuleiro[lin + 1][col] += 1
 
-        if lin < numero_de_casas - 1 and col < numero_de_casas - 1 and tabuleiro[lin + 1][col + 1] != '*':
-            tabuleiro[lin + 1][col + 1] += 1
+            if lin < numero_de_casas - 1 and col < numero_de_casas - 1 and tabuleiro[lin + 1][col + 1] != '*':
+                tabuleiro[lin + 1][col + 1] += 1
 
 
 def campos_adjacentes(linha, coluna):
@@ -121,8 +121,6 @@ def mostrar_campos_2():
             cont+=1
 
 
-
-
 def casas_vagas():
     contador = 0
     for l in tab_visivel:
@@ -133,10 +131,8 @@ def casas_vagas():
     return contador
 
 
-colocar_numeros_de_bombas_ao_redor()
-
-
 def show_tab(tab):
+
     tab = tab
     cont = 0
     print('      ', end='')
@@ -155,14 +151,20 @@ def show_tab(tab):
         cont+=1
         print()
         # print()
+    print("\n" * 13)
 
-show_tab(tabuleiro)
+
 show_tab(tab_visivel)
-# print(tab_reserva)
+
 
 def jogar():
     while True:
         coordenadas = input(f'Digite as coordenadas de 0 a {numero_de_casas - 1} (linha e coluna): ')
+        if int(coordenadas[0])>numero_de_casas-1 or int(coordenadas[1]) > numero_de_casas-1:
+
+            print('Coordenada inválida!')
+            continue
+
         linha = int(coordenadas[0])
         coluna = int(coordenadas[1])
 
@@ -186,4 +188,5 @@ if __name__=='__main__':
     criar_tabuleiro()
     colocar_bombas()
     colocar_numeros_de_bombas_ao_redor()
+
     jogar()
