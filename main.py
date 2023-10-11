@@ -1,8 +1,9 @@
 from random import randint
-numero_de_casas = int(input('Digite a quantidade de linhas que o tabuleiro terá: '))
-numero_de_bombas = int(input('Digite a quantidade de bombas: '))
-# numero_de_casas = 10
-# numero_de_bombas = 10
+# from tela import *
+# numero_de_casas = int(input('Digite a quantidade de linhas que o tabuleiro terá: '))
+# numero_de_bombas = int(input('Digite a quantidade de bombas: '))
+numero_de_casas = 10
+numero_de_bombas = 10
 
 tabuleiro = []
 tab_visivel = [[" " for l in range(numero_de_casas)] for c in range(numero_de_casas)]
@@ -168,6 +169,8 @@ def jogar():
         linha = int(coordenadas[0])
         coluna = int(coordenadas[1])
 
+        anexar_tabelas()
+
         if tabuleiro[linha][coluna] != '*':
             tab_visivel[linha][coluna] = tabuleiro[linha][coluna]
             if tabuleiro[linha][coluna] == 0:
@@ -182,11 +185,80 @@ def jogar():
         if casas_vagas() == numero_de_bombas:
             print('PARABÉNS, VOCÊ GANHOU!!!!!')
 
+casas_visiveis = []
+
+dict_casas_ocultas = {}
+def posicoes():
+    c = 0
+    c2 = 0
+    c3 = 0
+    for i in tabuleiro:
+        c3 = 0
+        for j in i:
+            # print(f'{c2}{c3}, {j}')
+            dict_casas_ocultas[int(f'{c2}{c3}')] = j
+
+            c += 1
+            c3 += 1
+        c2 += 1
+    print(dict_casas_ocultas)
+def anexar_tabelas(valor):
+    c = 0
+    c2 = 0
+    c3 = 0
+    for i in tab_visivel:
+        c3 = 0
+        for j in i:
+            print(c, j,  c2,c3 )
+            if c == valor:
+                jogada((c2,c3))
+                casas_visiveis.append(int(f'{c2}{c3}'))
+
+            c += 1
+            c3 += 1
+        c2+=1
+
 
 
 if __name__=='__main__':
+
+    pass
+
+def play():
     criar_tabuleiro()
     colocar_bombas()
     colocar_numeros_de_bombas_ao_redor()
+    print(tabuleiro)
+    posicoes()
 
-    jogar()
+
+    # jogar()
+
+play()
+# anexar_tabelas()
+
+def jogada(coordenadas):
+
+
+    if int(coordenadas[0])>numero_de_casas-1 or int(coordenadas[1]) > numero_de_casas-1:
+
+        print('Coordenada inválida!')
+
+
+    linha = int(coordenadas[0])
+    coluna = int(coordenadas[1])
+
+
+
+    if tabuleiro[linha][coluna] != '*':
+        tab_visivel[linha][coluna] = tabuleiro[linha][coluna]
+        if tabuleiro[linha][coluna] == 0:
+            mostrar_campos(linha, coluna)
+            mostrar_campos_2()
+        show_tab(tab_visivel)
+    else:
+        print('VOCÊ EXPLODIU UMA BOMBA!!!')
+        show_tab(tabuleiro)
+
+    if casas_vagas() == numero_de_bombas:
+        print('PARABÉNS, VOCÊ GANHOU!!!!!')
