@@ -7,8 +7,8 @@ from main import *
 from testes import *
 
 pg.init()
-
-LINHAS, COLUNAS = 10, 10
+PADRAO = 10
+LINHAS, COLUNAS = PADRAO, PADRAO
 CINZA_CLARO = (120,120,120)
 CINZA_ESCURO = (70, 70, 70)
 BRANCO = (255,255,255)
@@ -16,11 +16,13 @@ PRETO = (0,0,0)
 AMARELO = (255,255,0)
 VERMELHO = (255,0,0)
 
+cor_da_casa = CINZA_CLARO
+
 
 largura_do_quadrado = 35
-numero_de_bombas = 10
+numero_de_bombas = 15
 
-fonte = pg.font.SysFont('arial', largura_do_quadrado // 2, True)
+fonte = pg.font.SysFont('arial', largura_do_quadrado // 1, True)
 
 tela = pg.display.set_mode((LINHAS * largura_do_quadrado, COLUNAS * largura_do_quadrado))
 tela.fill(CINZA_ESCURO)
@@ -50,12 +52,18 @@ dict_casas = {}
 for i in casas:
     # print(i)
     valor = '' if dict_casas_ocultas[casas.index(i)] == 0 else dict_casas_ocultas[casas.index(i)]
-    dict_casas[casas.index(i)] = [i, valor, False]
+    dict_casas[casas.index(i)] = [i, valor, 0]
 
-for i, j in dict_casas.items():
-    print(i, j)
+# for i, j in dict_casas.items():
+#     print(i, j)
 
 posicoes_das_bombas = []
+
+def explosao():
+    global cor_da_casa
+    for i in range(len(dict_casas)):
+        casas_visiveis.add(i)
+        cor_da_casa = (255,99,71)
 
 
 def selecionar_casa(pos, revelar):
@@ -63,34 +71,39 @@ def selecionar_casa(pos, revelar):
     valor[0] = pos[0]
     valor[1] = pos[1]
 
-    for i, j in dict_casas.items():
-        if j[2]:
-            pass
-        if valor[0] < j[0][0]+largura_do_quadrado and valor[1] < j[0][1]+largura_do_quadrado:
-            print(i, j[2])
-            j[2] = True
 
-            if not revelar:
+    for i, j in dict_casas.items():
+
+
+        # print(i, j)
+        if valor[0] < j[0][0]+largura_do_quadrado and valor[1] < j[0][1]+largura_do_quadrado:
+            print(j[2])
+
+            if not revelar and i not in casas_visiveis:
                 print('não revelada')
                 txt = fonte.render('?', True, VERMELHO)
                 tela.blit(txt, (j[0]))
             return i
 
 def revelar_casas():
+
+
     for i, j in dict_casas.items():
-        print(i, type(i))
+        # print(i, type(i))
         if i in casas_visiveis:
-            pg.draw.rect(tela, CINZA_CLARO, (j[0][0], j[0][1], largura_do_quadrado, largura_do_quadrado))
+            j[2] = 1
+            pg.draw.rect(tela, cor_da_casa, (j[0][0], j[0][1], largura_do_quadrado, largura_do_quadrado))
             pg.draw.rect(tela, PRETO, (j[0][0], j[0][1], largura_do_quadrado, largura_do_quadrado), 1)
             txt = fonte.render(str(j[1]), True, PRETO)
             tela.blit(txt, (j[0]))
+
             # txt = fonte.render(str(j[1]), True, PRETO)
 
-    print(casas_visiveis)
+    # print('casas',casas_visiveis)
 
 
-# colocar_bombas()
-play()
+# # colocar_bombas()
+# play()
 while True:
     # sleep(5)
     pg.display.update()
@@ -103,10 +116,16 @@ while True:
         if e.type == pg.MOUSEBUTTONUP:
             pos = pg.mouse.get_pos()
             if e.button == 1:
-                print(pos)
 
-                anexar_tabelas(selecionar_casa(pos, True))
+                fim = anexar_tabelas(selecionar_casa(pos, True))
+
+                if fim == 1:
+                    explosao()
+                elif fim == 0:
+                    print('PARABÉNS')
+
                 revelar_casas()
+                print(pos)
 
             if e.button == 3:
                 selecionar_casa(pos, False)

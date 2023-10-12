@@ -28,6 +28,8 @@ def colocar_bombas():
         posicoes_das_bombas.append(f'{linha}{coluna}')
         bombas_colocadas+=1
 
+    colocar_numeros_de_bombas_ao_redor()
+
 
 
 def colocar_numeros_de_bombas_ao_redor():
@@ -88,6 +90,8 @@ def campos_adjacentes(linha, coluna):
     if lin + 1 < numero_de_casas and col + 1 < numero_de_casas:
         campos.append([lin + 1, col + 1])
 
+    for i in campos:
+        casas_visiveis.add(int(f'{i[0]}{i[1]}'))
     return campos
 
 
@@ -185,7 +189,7 @@ def jogar():
         if casas_vagas() == numero_de_bombas:
             print('PARABÉNS, VOCÊ GANHOU!!!!!')
 
-casas_visiveis = []
+casas_visiveis = set()
 
 dict_casas_ocultas = {}
 def posicoes():
@@ -201,7 +205,9 @@ def posicoes():
             c += 1
             c3 += 1
         c2 += 1
-    print(dict_casas_ocultas)
+
+    for i, j in dict_casas_ocultas.items():
+        print(i,  j)
 def anexar_tabelas(valor):
     c = 0
     c2 = 0
@@ -209,14 +215,16 @@ def anexar_tabelas(valor):
     for i in tab_visivel:
         c3 = 0
         for j in i:
-            print(c, j,  c2,c3 )
+            # print(c, j,  c2,c3 )
             if c == valor:
-                jogada((c2,c3))
-                casas_visiveis.append(int(f'{c2}{c3}'))
+                fim = jogada((c2,c3))
+                casas_visiveis.add(int(f'{c2}{c3}'))
 
             c += 1
             c3 += 1
         c2+=1
+
+    return fim
 
 
 
@@ -227,7 +235,7 @@ if __name__=='__main__':
 def play():
     criar_tabuleiro()
     colocar_bombas()
-    colocar_numeros_de_bombas_ao_redor()
+
     print(tabuleiro)
     posicoes()
 
@@ -255,10 +263,15 @@ def jogada(coordenadas):
         if tabuleiro[linha][coluna] == 0:
             mostrar_campos(linha, coluna)
             mostrar_campos_2()
+            casas_visiveis.add(int(f'{linha}{coluna}'))
         show_tab(tab_visivel)
     else:
         print('VOCÊ EXPLODIU UMA BOMBA!!!')
         show_tab(tabuleiro)
+        return 1
 
     if casas_vagas() == numero_de_bombas:
         print('PARABÉNS, VOCÊ GANHOU!!!!!')
+        return 0
+
+    return 2
