@@ -2,7 +2,7 @@ from random import randint
 # from tela import *
 # numero_de_casas = int(input('Digite a quantidade de linhas que o tabuleiro terá: '))
 # numero_de_bombas = int(input('Digite a quantidade de bombas: '))
-numero_de_casas = 10
+numero_de_casas = 9
 numero_de_bombas = 10
 
 tabuleiro = []
@@ -159,7 +159,7 @@ def show_tab(tab):
     print("\n" * 13)
 
 
-show_tab(tab_visivel)
+
 
 
 def jogar():
@@ -195,23 +195,24 @@ dict_casas_ocultas = {}
 def posicoes():
     c = 0
     c2 = 0
-    c3 = 0
+
     for i in tabuleiro:
         c3 = 0
         for j in i:
-            # print(f'{c2}{c3}, {j}')
+            # print(f'{c2}{c3} {c}, {j}')
             dict_casas_ocultas[int(f'{c2}{c3}')] = j
+            # print(f'{c2}{c3} {c}, {j} ')
+            # dict_casas_ocultas[int(f'{0}{c}')] = j
 
             c += 1
             c3 += 1
         c2 += 1
 
-    for i, j in dict_casas_ocultas.items():
-        print(i,  j)
+    # for i, j in dict_casas_ocultas.items():
+    #     print(f'casa: {i}, valor: {j}')
 def anexar_tabelas(valor):
     c = 0
     c2 = 0
-    c3 = 0
     for i in tab_visivel:
         c3 = 0
         for j in i:
@@ -227,16 +228,11 @@ def anexar_tabelas(valor):
     return fim
 
 
-
-if __name__=='__main__':
-
-    pass
-
 def play():
     criar_tabuleiro()
     colocar_bombas()
 
-    print(tabuleiro)
+    # print(tabuleiro)
     posicoes()
 
 
@@ -244,6 +240,7 @@ def play():
 
 play()
 # anexar_tabelas()
+show_tab(tabuleiro)
 
 def jogada(coordenadas):
 
@@ -264,7 +261,7 @@ def jogada(coordenadas):
             mostrar_campos(linha, coluna)
             mostrar_campos_2()
             casas_visiveis.add(int(f'{linha}{coluna}'))
-        show_tab(tab_visivel)
+        # show_tab(tab_visivel)
     else:
         print('VOCÊ EXPLODIU UMA BOMBA!!!')
         show_tab(tabuleiro)
