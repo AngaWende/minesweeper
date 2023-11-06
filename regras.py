@@ -4,8 +4,8 @@ dim = 15
 # qtde_colunas = 5
 # numero_de_bombas = 2
 qtde_linhas = 15
-qtde_colunas = 25
-numero_de_bombas = 35
+qtde_colunas = 15
+numero_de_bombas = 100
 posicoes_das_bombas = []
 
 
@@ -26,7 +26,7 @@ def colocar_bombas():
         bombas_colocadas+=1
 
 
-colocar_bombas()
+
 
 def colocar_numeros_de_bombas_ao_redor():
     posicoes_proximas = []
@@ -71,12 +71,10 @@ def casas_ao_redor(coordenada):
 
 
 
-def show_dic(x):
-    for i, j in x.items():
-        print(i, j)
+
 
 dic = dict()
-c_linha, c_col, c_geral = 0, 0, 0
+
 
 #DICIONÁRIO: 0 - COORDENADA LÓGICA DO TABULEIRO, [Nº DE LINHA, Nº DE COLUNA]
 #            1 - VALOR CONTIDO NA CASA (BOMBA OU NÚMERO DE BOMBAS PRÓXIMAS)
@@ -85,19 +83,21 @@ c_linha, c_col, c_geral = 0, 0, 0
 #                                REVELADA - CASA REVELADA AO CLICAR COM BOTÃO ESQUERDO
 #                                ABERTA - CASA REVELADA POR CONTER 0 BOMBA AO REDOR)
 #            3 - COORDENADA FÍSICA QUE TEM A POSIÇÃO DO CLIQUE NA TELA, [EIXO X, EIXO Y]
-for i in tab:
-    c_col = 0
-    for j in i:
-        dic[f'{c_linha},{c_col}'] = [[c_linha, c_col], j, 'oculto', []]
-        # dic[c_geral] = [[c_linha, c_col], j, 0, []]
-        c_col +=1
-        c_geral+=1
-    c_linha+=1
+def criar_dicionario():
+    global dic
+    c_linha, c_col, c_geral = 0, 0, 0
+    for i in tab:
+        c_col = 0
+        for j in i:
+            dic[f'{c_linha},{c_col}'] = [[c_linha, c_col], j, 'oculto', []]
+            # dic[c_geral] = [[c_linha, c_col], j, 0, []]
+            c_col +=1
+            c_geral+=1
+        c_linha+=1
 
-print(dic)
 
-def mostrar_valor(x):
-    print(tab[dic[x][0][0]][dic[x][0][1]])
+
+
 
 def mostrar_valor_por_coordenada(lin, col):
     for i in dic.values():
@@ -106,22 +106,12 @@ def mostrar_valor_por_coordenada(lin, col):
             return i[1]
 
 
-colocar_numeros_de_bombas_ao_redor()
+def jogar():
+    colocar_bombas()
+    criar_dicionario()
+    colocar_numeros_de_bombas_ao_redor()
 
-def show():
-    pular = 0
-    for i, j in dic.items():
-        if j[2]:
-            print(j[3], end=' ')
-            # print(i, end=' ')
-        else:
-            # print(' ,', end=' ')
-            print(j[3], end=' ')
-            # print(i, end=' ')
-        pular+=1
-        if pular == qtde_colunas:
-            print()
-            pular = 0
+
 
 
 

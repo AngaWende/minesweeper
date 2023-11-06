@@ -16,8 +16,6 @@ VERMELHO = (255, 99, 71)
 VERMELHO_ESCURO = (255, 0, 0)
 VERDE_CLARO = (152,251,152)
 VERDE_BOMBA = (0,128,0)
-
-
 cor_da_casa = CINZA_CLARO
 
 largura_do_quadrado = 35
@@ -28,11 +26,10 @@ tela = pg.display.set_mode((COLUNAS * largura_do_quadrado, LINHAS * largura_do_q
 tela.fill(CINZA_ESCURO)
 
 casas = []
-# descricao_casas = []
-
+primeira_jogada = True
 contador_de_casas = 0
 
-
+jogar()
 def criar_quadrados():  #CRIA OS QUADRADOS E ADICIONA AS COORDENADAS NO DICIONARIO
     c = 0
     for i in range(LINHAS):
@@ -46,7 +43,6 @@ def criar_quadrados():  #CRIA OS QUADRADOS E ADICIONA AS COORDENADAS NO DICIONAR
                          (largura_do_quadrado * j, largura_do_quadrado * i, largura_do_quadrado, largura_do_quadrado),
                          2)
             c+=1
-    print(dic)
 
 criar_quadrados()
 dict_casas = {}
@@ -71,8 +67,6 @@ def explosao():
             txt = fonte.render(valor_do_campo, True, PRETO)
             tela.blit(txt, (j[3][0] + 6, j[3][1]))
 
-
-
 def validar_vitoria():
     cont = 0
     for i in dic.values():
@@ -81,8 +75,6 @@ def validar_vitoria():
 
     if cont == (LINHAS*COLUNAS) - numero_de_bombas:
         vitoria()
-
-
 
 def vitoria():
     global cor_da_casa
@@ -125,7 +117,14 @@ def selecionar_casa(pos, revelar):
                         revelar_casas_vazias()
                         contador_de_casas += 1
                     if j[1] == '*':
-                        explosao()
+                        global primeira_jogada
+                        if primeira_jogada:
+                            validar_primeira_jogada()
+                        else:
+                            explosao()
+                            break
+
+
                     else:
                         pg.draw.rect(tela, CINZA_CLARO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado))
                         pg.draw.rect(tela, PRETO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado), 1)
@@ -133,6 +132,9 @@ def selecionar_casa(pos, revelar):
                         txt = fonte.render(valor_do_campo, True, PRETO)
                         tela.blit(txt, (j[3][0] + 6, j[3][1]))
                         j[2] = 'revelado' if revelar == 1 else 'aberto'
+
+                if j[1] > 0 and j[2] == 'revelado':
+                    clicar_com_esquerdo_em_numero(j[0])
 
 
 
@@ -151,12 +153,10 @@ def selecionar_casa(pos, revelar):
             validar_vitoria()
 
 
-
+            primeira_jogada = False
             break
 
 casas_reveladas = []
-
-
 
 def remover_duplicatas(lista):
     nova_lista = []
@@ -178,14 +178,13 @@ def mostrar_casas_vazias():
 def revelar_casas_vazias():
     # c, d = 0, 0
     casas = []
-    for _ in range(LINHAS):
+    for _ in range(LINHAS*COLUNAS//2):
         for i in dic.values():
             if i[2] == 'revelado' and i[1] == 0:
 
                 casas.extend(casas_ao_redor(i[0]))
                 casas = remover_duplicatas(casas)
-                # c+=1
-                # print('c: ',c)
+
                 for i in casas:
                     j = dic[f'{i[0]},{i[1]}']
                     pg.draw.rect(tela, CINZA_CLARO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado))
@@ -195,12 +194,58 @@ def revelar_casas_vazias():
                     tela.blit(txt, (j[3][0] + 6, j[3][1]))
                     j[2] = 'revelado'
 
+def clicar_com_esquerdo_em_numero(pos):
+    linha = pos[0]
+    coluna = pos[1]
+    valor = dic[f'{linha},{coluna}'][1]
+
+    casas_proximas = []
+    valores_proximos = []
+
+    cont = 0
+
+    #VERIFICAR SE A QUANTIDADE DE INTERROGAÇÕES É IGUAL AO NÚMERO NA CASA
+    for i in casas_ao_redor(pos):
+        if dic[f'{i[0]},{i[1]}'][2] == 'interrogação':
+            cont += 1
+        elif dic[f'{i[0]},{i[1]}'][2] == 'oculto':
+            casas_proximas.append(i)
+            valores_proximos.append(dic[f'{i[0]},{i[1]}'][1])
+
+    if cont != valor:
+        return 0
+
+    #SE UMA DELAS TIVER BOMBA, ACIONAR EXPLOSÃO
+
+    if '*' in valores_proximos:
+        explosao()
+        return 0
+
+
+    #REVELAR TODAS AS CASAS QUE NÃO TENHAM INTERROGAÇÃO
+    for i in casas_proximas:
+        j = dic[f'{i[0]},{i[1]}']
+        pg.draw.rect(tela, CINZA_CLARO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado))
+        pg.draw.rect(tela, PRETO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado), 1)
+        valor_do_campo = ' ' if str(j[1]) == '0' else str(j[1])
+        txt = fonte.render(valor_do_campo, True, PRETO)
+        tela.blit(txt, (j[3][0] + 6, j[3][1]))
+        j[2] = 'revelado'
+
+    if 0 in valores_proximos:
+        revelar_casas_vazias()
+
+
+def validar_primeira_jogada():
+    jogar()
+
 
 
 
 
 if __name__=='__main__':
     while True:
+
         pg.display.update()
 
         for e in pg.event.get():
@@ -210,19 +255,10 @@ if __name__=='__main__':
 
             if e.type == pg.MOUSEBUTTONUP:
                 pos = pg.mouse.get_pos()
-                print(f'pos mouse: {pos}')
                 if e.button == 1:
 
-
-                    print(pos)
-
-                    # print(dic)
-
                     selecionar_casa(pos, True)
-                    # campos_adjacentes(pos)
 
-                    # for i, j in dic.items():
-                    #     print(f'{i}:  {j}')
 
                 if e.button == 3:
                     selecionar_casa(pos, False)
