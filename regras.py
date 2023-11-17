@@ -1,24 +1,40 @@
 from random import randint
 dim = 15
-# qtde_linhas = 5
-# qtde_colunas = 5
+# qtde_linhas = 10
+# qtde_colunas = 10
 # numero_de_bombas = 2
 qtde_linhas = 15
 qtde_colunas = 15
-numero_de_bombas = 100
+numero_de_bombas = round(qtde_linhas * qtde_colunas * 0.2)
 posicoes_das_bombas = []
 
 
 tab = [[0 for _ in range(qtde_colunas)] for _ in range(qtde_linhas)]
+print(tab)
+def colocar_bombas(pos):
+    #COLOCA A BOMBA ALEATÓRIAMENTE E NÃO DEIXA COLOCAR NENHUMA PERTO DA PRIMEIRA CASA ABERTA
 
-def colocar_bombas():
+    pos_l = int(pos.split(',')[0])
+    pos_c = int(pos.split(',')[1])
     bombas_colocadas = 0
+    proximos = []
+    proximos.append([pos_l - 1, pos_c - 1])
+    proximos.append([pos_l - 1, pos_c])
+    proximos.append([pos_l - 1, pos_c + 1])
+    proximos.append([pos_l, pos_c - 1])
+    proximos.append([pos_l, pos_c])
+    proximos.append([pos_l, pos_c + 1])
+    proximos.append([pos_l + 1, pos_c - 1])
+    proximos.append([pos_l + 1, pos_c])
+    proximos.append([pos_l + 1, pos_c + 1])
 
     while bombas_colocadas < numero_de_bombas:
         linha = randint(0, qtde_linhas-1)
         coluna = randint(0, qtde_colunas-1)
 
-        if tab[linha][coluna] == '*':
+
+
+        if tab[linha][coluna] == '*' or [linha, coluna] in proximos:
             continue
         else:
             tab[linha][coluna] = '*'
@@ -85,17 +101,26 @@ dic = dict()
 #            3 - COORDENADA FÍSICA QUE TEM A POSIÇÃO DO CLIQUE NA TELA, [EIXO X, EIXO Y]
 def criar_dicionario():
     global dic
+
     c_linha, c_col, c_geral = 0, 0, 0
     for i in tab:
         c_col = 0
         for j in i:
             dic[f'{c_linha},{c_col}'] = [[c_linha, c_col], j, 'oculto', []]
-            # dic[c_geral] = [[c_linha, c_col], j, 0, []]
             c_col +=1
             c_geral+=1
         c_linha+=1
 
-
+def criar_dic_inicial():
+    global dict_casas
+    c_linha, c_col, c_geral = 0, 0, 0
+    for i in tab:
+        c_col = 0
+        for j in i:
+            dic[f'{c_linha},{c_col}'] = [[c_linha, c_col], j, 'oculto', []]
+            c_col += 1
+            c_geral += 1
+        c_linha += 1
 
 
 
@@ -106,10 +131,11 @@ def mostrar_valor_por_coordenada(lin, col):
             return i[1]
 
 
-def jogar():
-    colocar_bombas()
+def jogar(pos):
+    colocar_bombas(pos)
     criar_dicionario()
     colocar_numeros_de_bombas_ao_redor()
+
 
 
 
