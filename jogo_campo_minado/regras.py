@@ -5,7 +5,8 @@ dim = 15
 # numero_de_bombas = 2
 qtde_linhas = 15
 qtde_colunas = 15
-numero_de_bombas = round(qtde_linhas * qtde_colunas * 0.2)
+numero_de_bombas = round(3)
+# numero_de_bombas = round(qtde_linhas * qtde_colunas * 0.2)
 posicoes_das_bombas = []
 
 

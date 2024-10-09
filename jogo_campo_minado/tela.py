@@ -77,7 +77,7 @@ def explosao():
 
             pg.draw.rect(tela, VERMELHO_ESCURO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado))
             pg.draw.rect(tela, PRETO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado), 1)
-            mina = pg.image.load('../assets/mina.png')
+            mina = pg.image.load('../campo_minado/assets/mina.png')
             tela.blit(mina, (j[3][0] + 1, j[3][1] + 1))
         else:
 
@@ -106,7 +106,7 @@ def vitoria():
         if j[1] == '*':
             pg.draw.rect(tela, VERDE_BOMBA, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado))
             pg.draw.rect(tela, PRETO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado), 1)
-            flag = pg.image.load('../assets/flag.png')
+            flag = pg.image.load('../campo_minado/assets/flag.png')
             tela.blit(flag, (j[3][0] + 1, j[3][1] + 1))
         else:
             pg.draw.rect(tela, VERDE_CLARO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado))
