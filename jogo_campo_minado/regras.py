@@ -1,17 +1,14 @@
 from random import randint
 dim = 15
-# qtde_linhas = 10
-# qtde_colunas = 10
-# numero_de_bombas = 2
 qtde_linhas = 15
 qtde_colunas = 15
-numero_de_bombas = round(3)
-# numero_de_bombas = round(qtde_linhas * qtde_colunas * 0.2)
+# numero_de_bombas = round(3)
+numero_de_bombas = round(qtde_linhas * qtde_colunas * 0.2)
 posicoes_das_bombas = []
 
 
 tab = [[0 for _ in range(qtde_colunas)] for _ in range(qtde_linhas)]
-print(tab)
+# print(tab)
 def colocar_bombas(pos):
     #COLOCA A BOMBA ALEATÓRIAMENTE E NÃO DEIXA COLOCAR NENHUMA PERTO DA PRIMEIRA CASA ABERTA
 

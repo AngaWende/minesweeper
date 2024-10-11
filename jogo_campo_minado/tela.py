@@ -1,4 +1,3 @@
-''' TESTE DE TELA PARA CAMPO MINADO '''
 
 import pygame as pg
 from regras import *
@@ -21,14 +20,14 @@ largura_do_quadrado = 35
 
 fonte = pg.font.SysFont('arial', largura_do_quadrado // 1, True)
 
-tela = pg.display.set_mode((COLUNAS * largura_do_quadrado, LINHAS * largura_do_quadrado))
+tela = pg.display.set_mode((COLUNAS * largura_do_quadrado, LINHAS * largura_do_quadrado+largura_do_quadrado))
 tela.fill(CINZA_ESCURO)
 
 casas = []
 contador_de_casas = 0
 
 
-def quadrados_iniciais():  # CRIA OS CAMPOS ANTES DE COLOCAR AS BOMBAS PARA NÃO DEIXA CLICAR EM UMA BOMBA NA PRIMEIRA JOGADA
+def quadrados_iniciais():  # CRIA OS CAMPOS ANTES DE COLOCAR AS BOMBAS PARA NÃO DEIXAR CLICAR EM UMA BOMBA NA PRIMEIRA JOGADA
     global dict_casas
     c_linha, c_col, c_geral = 0, 0, 0
     for i in tab:
@@ -68,7 +67,23 @@ def criar_quadrados():  # CRIA OS QUADRADOS E ADICIONA AS COORDENADAS NO DICIONA
 
 dict_casas = {}
 quadrados_iniciais()
+copia_da_qtde_de_bombas = numero_de_bombas
 
+
+
+def criar_display_de_bombas(texto='Bombas restantes', cor=VERDE_BOMBA):
+    pg.draw.rect(tela, PRETO,
+                 (largura_do_quadrado , largura_do_quadrado * qtde_linhas, largura_do_quadrado*3 , largura_do_quadrado),
+                 0)
+    pg.draw.rect(tela, PRETO,
+                 (largura_do_quadrado *5 , largura_do_quadrado * qtde_linhas, largura_do_quadrado*9 , largura_do_quadrado),
+                 0)
+    txt = fonte.render(str(copia_da_qtde_de_bombas), True, VERDE_BOMBA)
+    txt2 = fonte.render(texto, True, cor)
+    tela.blit(txt, [largura_do_quadrado * 2, largura_do_quadrado* qtde_linhas] )
+    tela.blit(txt2, [largura_do_quadrado * 5, largura_do_quadrado* qtde_linhas] )
+
+criar_display_de_bombas()
 
 def explosao():
     for j in dic.values():
@@ -79,8 +94,8 @@ def explosao():
             pg.draw.rect(tela, PRETO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado), 1)
             mina = pg.image.load('../campo_minado/assets/mina.png')
             tela.blit(mina, (j[3][0] + 1, j[3][1] + 1))
+            criar_display_de_bombas(' Você Perdeu!', VERMELHO_ESCURO)
         else:
-
             pg.draw.rect(tela, VERMELHO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado))
             pg.draw.rect(tela, PRETO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado), 1)
             valor_do_campo = ' ' if str(j[1]) == '0' else str(j[1])
@@ -108,6 +123,7 @@ def vitoria():
             pg.draw.rect(tela, PRETO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado), 1)
             flag = pg.image.load('../campo_minado/assets/flag.png')
             tela.blit(flag, (j[3][0] + 1, j[3][1] + 1))
+            criar_display_de_bombas(' Você ganhou!', AMARELO)
         else:
             pg.draw.rect(tela, VERDE_CLARO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado))
             pg.draw.rect(tela, PRETO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado), 1)
@@ -119,12 +135,12 @@ def vitoria():
 def selecionar_casa(pos, revelar):
     # REVELAR: 0 - CLIQUE COM O DIREITO
     #         1 - CLIQUE COM O ESQUERDO
-    #         2 - ACIONADO PELO MÉTODO revelar_casas_vazias()
+    #         2 - ACIONADO PELA FUNÇÃO revelar_casas_vazias()
 
     valor = [0, 0]
     valor[0] = pos[0]
     valor[1] = pos[1]
-    global contador_de_casas
+    global contador_de_casas, copia_da_qtde_de_bombas
 
     for j in dic.values():
 
@@ -156,11 +172,15 @@ def selecionar_casa(pos, revelar):
                     if j[2] == 'interrogação':  # VERIFICA SE O STATUS ESTÁ COMO INTERROGAÇÃO (2)
                         pg.draw.rect(tela, CINZA_ESCURO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado))
                         pg.draw.rect(tela, PRETO, (j[3][0], j[3][1], largura_do_quadrado, largura_do_quadrado), 1)
+                        copia_da_qtde_de_bombas += 1
+                        criar_display_de_bombas()
                         j[2] = 'oculto'
                     else:
                         txt = fonte.render('?', True, VERMELHO_ESCURO)
+                        copia_da_qtde_de_bombas -= 1
                         tela.blit(txt, (j[3][0] + 6, j[3][1]))
                         j[2] = 'interrogação'
+                        criar_display_de_bombas()
 
             validar_vitoria()
 
@@ -269,8 +289,10 @@ if __name__ == '__main__':
                             if pos[0] < j[0] + largura_do_quadrado and pos[1] < j[1] + largura_do_quadrado:
                                 jogar(i)
                                 criar_quadrados()
+                                primeira = False
                                 break
-                        primeira = False
+
+
 
                     selecionar_casa(pos, True)
 
